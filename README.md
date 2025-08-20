@@ -1,2 +1,2 @@
-# valere-margins
-Valere margins technical task
+# Valere Margins Tech Task
+Valere margins technical task.
