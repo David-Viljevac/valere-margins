@@ -7,6 +7,7 @@ export interface JwtPayload {
   user_id: string; 
   email: string;
   role_id: string;
+  isAdmin;
   iat?: number;
   exp?: number;
 }
@@ -33,10 +34,12 @@ export class AuthService {
   }
 
   async login(user: any) {
+    const userFromDb = await this.usersService.findById(user.id)
     const payload: JwtPayload = {
       user_id: user.id,
       email: user.email,
       role_id: user.role_id,
+      isAdmin: userFromDb.role.name === 'Admin'
     };
 
     const accessToken = this.jwtService.sign(payload);

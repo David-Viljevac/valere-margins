@@ -1,4 +1,4 @@
-import { Controller, Post, UseGuards, Request, Body, Get, Res } from '@nestjs/common';
+import { Controller, Post, UseGuards, Request, Body, Get, Res, Redirect } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Response } from 'express';
 import { LocalAuthGuard } from '../../common/guards/local-auth-guard';
@@ -42,6 +42,7 @@ export class AuthController {
 
   @Public()
   @Post('logout')
+  @Redirect('/')
   logout(@Res({ passthrough: true }) res: Response) {
     res.clearCookie('access_token');
     return { message: 'Logged out successfully' };
