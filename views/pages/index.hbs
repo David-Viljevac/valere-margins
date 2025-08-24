@@ -1,0 +1,39 @@
+{{#if error}}
+    <div style="background-color: #e74c3c; color: white; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+        {{error}}
+    </div>
+{{/if}}
+
+<div class="dashboard-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+    <div style="background: white; padding: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3>Total Classes</h3>
+        <p style="font-size: 2em; color: #3498db;">{{classes.length}}</p>
+    </div>
+    
+    <div style="background: white; padding: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3>Active Classes</h3>
+        <p style="font-size: 2em; color: #27ae60;">{{classes.length}}</p>
+    </div>
+</div>
+
+{{#if hasClasses}}
+    <div class="classes-section">
+        <h2>Recent Classes</h2>
+        <div class="classes-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+            {{#each classes}}
+                <div style="background: white; padding: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <h3>{{name}}</h3>
+                    <p>{{description}}</p>
+                    <p><strong>Duration:</strong> {{duration}} minutes</p>
+                    <p><strong>Capacity:</strong> {{max_capacity}}</p>
+                    <p><strong>Start:</strong> {{start_time}}</p>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+{{else}}
+    <div style="text-align: center; padding: 40px;">
+        <h2>No classes scheduled</h2>
+        <p>Check back later for new classes!</p>
+    </div>
+{{/if}}

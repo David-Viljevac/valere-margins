@@ -1,0 +1,9 @@
+<header class="header">
+    <h1>{{pageTitle}}</h1>
+    {{#if user}}
+        <div style="float: right;">
+            Welcome, {{user.name}}! 
+            <a href="/logout" style="color: #ecf0f1; margin-left: 10px;">Logout</a>
+        </div>
+    {{/if}}
+</header>

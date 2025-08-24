@@ -5,6 +5,12 @@ import { UserClass } from "./user-class.entity"
 
 @Entity('user')
 export class User {
+    constructor(partial?: Partial<User>) {
+        if (partial) {
+            Object.assign(this, partial);
+        }
+    }   
+
     @PrimaryColumn('uuid')
     id: string
 
