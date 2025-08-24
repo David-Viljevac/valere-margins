@@ -1,16 +1,19 @@
 import { Controller, Get, Render } from '@nestjs/common';
 import { ClassesService } from '../classes/classes.service';
+import { Public } from '../../common/decorators/public.decorator';
+import { request } from 'http';
 
 @Controller()
 export class AppController {
   constructor(private readonly classesService: ClassesService) {}
 
+  @Public()
   @Get()
   @Render('pages/index')
   async getHomePage() {
     try {
       const classes = await this.classesService.findAll();
-      console.log(classes)
+
       return {
         title: 'Sports Complex Dashboard',
         classes: classes,

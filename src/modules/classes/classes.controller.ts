@@ -18,7 +18,6 @@ export class ClassesController {
   constructor(private readonly classesService: ClassesService) {}
 
   @Get()
-//   @Public()
   @ApiOperation({ summary: 'Get all classes with optional filters' })
   @ApiQuery({ name: 'sports', required: false, type: [String] })
   @ApiQuery({ name: 'isActive', required: false, type: Boolean })
@@ -29,7 +28,6 @@ export class ClassesController {
   }
 
 @Get()
-// @Public()
 @ApiOperation({ summary: 'Get all classes' })
 async findAll() {
     const classes = await this.classesService.findAll();
@@ -46,7 +44,6 @@ async findAll() {
   }
 
   @Get(':id')
-//   @Public()
   @ApiOperation({ summary: 'Get class details by ID' })
   async findOne(@Param('id') id: string) {
     const classEntity = await this.classesService.findOne(id);

@@ -24,7 +24,7 @@ export class UsersRepository {
         userData.encrypted_password = hashedPassword
         const userToCreate = new User({
             id: v7(),
-            role_id: '0198d5d1-b2eb-7c86-a207-4bed26aeac18',
+            role_id: '0198d5d1-b2eb-7c86-a207-4bed26aeac18', //default member id
             ...userData,
             created_at: new Date(),
             edited_at: new Date(),
@@ -58,6 +58,28 @@ export class UsersRepository {
         } else {
             throw new Error('User not found');
         }
+    }
+
+    async findByEmail(userEmail: string): Promise<User> {
+        const foundUser = await this.userRepository.findOne({
+            where: { 
+                email: userEmail
+            },
+            relations: ['role']
+        })
+
+        return foundUser
+    }
+
+    async findById(userId: string): Promise<User> {
+        const foundUser = await this.userRepository.findOne({
+            where:{
+                id: userId
+            },
+            relations: ['role'],
+        })
+
+        return foundUser
     }
 }
 

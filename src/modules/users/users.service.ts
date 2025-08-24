@@ -19,4 +19,12 @@ export class UsersService {
     async register(userData: Partial<User>): Promise<User> {
         return this.usersRepository.register(userData)
     }
+
+    async findByEmail(userEmail: string): Promise<User> {
+        return this.usersRepository.findByEmail(userEmail)
+    }
+
+    async findById(userId: string): Promise<User> {
+        return this.usersRepository.findById(userId)
+    }
 }
