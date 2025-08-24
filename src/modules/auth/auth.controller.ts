@@ -1,4 +1,4 @@
-import { Controller, Post, UseGuards, Request, Body, Get, Res, Redirect } from '@nestjs/common';
+import { Controller, Post, UseGuards, Request, Body, Get, Res, Redirect, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Response } from 'express';
 import { LocalAuthGuard } from '../../common/guards/local-auth-guard';
@@ -10,7 +10,7 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Request() req, @Res({ passthrough: true }) res: Response) {
+  async login(@Req() req, @Res({ passthrough: true }) res: Response) {
     const result = await this.authService.login(req.user);
     
     // Store JWT in HTTP-only cookie for web app

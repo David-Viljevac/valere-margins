@@ -7,7 +7,8 @@ export interface JwtPayload {
   user_id: string; 
   email: string;
   role_id: string;
-  isAdmin;
+  isAdmin: boolean;
+  role: string;
   iat?: number;
   exp?: number;
 }
@@ -39,7 +40,8 @@ export class AuthService {
       user_id: user.id,
       email: user.email,
       role_id: user.role_id,
-      isAdmin: userFromDb.role.name === 'Admin'
+      isAdmin: userFromDb.role.name === 'Admin',
+      role: userFromDb.role.name,
     };
 
     const accessToken = this.jwtService.sign(payload);

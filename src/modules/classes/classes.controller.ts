@@ -1,19 +1,11 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query, UseGuards, Req } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { ClassesService } from './classes.service';
-// import { CreateClassDto } from './dto/create-class.dto';
-// import { UpdateClassDto } from './dto/update-class.dto';
-// import { FilterClassesDto } from './dto/filter-classes.dto';
 import { ResponseFactory } from '../../common/dto/response.dto';
 import { FilterClassesDto } from '../../common/dto/filter-classes.dto';
-// import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
-// import { RolesGuard } from '../../common/guards/roles.guard';
-// import { Roles } from '../../common/decorators/roles.decorator';
-// import { Public } from '../../common/decorators/public.decorator';
 
 @ApiTags('classes')
 @Controller('/classes')
-// @UseGuards(JwtAuthGuard, RolesGuard)
 export class ClassesController {
   constructor(private readonly classesService: ClassesService) {}
 

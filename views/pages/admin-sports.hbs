@@ -19,7 +19,7 @@
 <div style="background: white; padding: 25px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 30px;">
     <h2 style="color: #2c3e50; margin-bottom: 20px;">Add New Sport</h2>
     
-    <form action="/admin/sports" method="POST" style="display: flex; gap: 15px; align-items: end; flex-wrap: wrap;">
+    <form action="/sports" method="POST" style="display: flex; gap: 15px; align-items: end; flex-wrap: wrap;">
         <div style="flex: 1; min-width: 250px;">
             <label for="sportName" style="display: block; margin-bottom: 8px; color: #2c3e50; font-weight: bold;">Sport Name:</label>
             <input 
@@ -87,7 +87,7 @@
                             </button>
                             
                             <!-- Delete Button -->
-                            <form action="/admin/sports/{{id}}/delete" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete {{name}}? This action cannot be undone.');">
+                            <form action="/sports/{{id}}/delete" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete {{name}}? This action cannot be undone.');">
                                 <button 
                                     type="submit" 
                                     style="padding: 8px 12px; background-color: #e74c3c; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 12px; transition: background-color 0.3s;"
@@ -152,7 +152,7 @@
 function editSport(id, name) {
     document.getElementById('editModal').style.display = 'block';
     document.getElementById('editSportName').value = name;
-    document.getElementById('editForm').action = '/admin/sports/' + id + '/edit';
+    document.getElementById('editForm').action = '/sports/' + id + '/edit';
 }
 
 function closeEditModal() {
