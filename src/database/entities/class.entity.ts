@@ -5,13 +5,13 @@ import { UserClass } from "./user-class.entity"
 
 // Define the enum for days of the week
 export enum DayOfWeek {
-  MONDAY = 'Monday',
-  TUESDAY = 'Tuesday',
-  WEDNESDAY = 'Wednesday',
-  THURSDAY = 'Thursday',
-  FRIDAY = 'Friday',
-  SATURDAY = 'Saturday',
-  SUNDAY = 'Sunday'
+    MONDAY = 'Monday',
+    TUESDAY = 'Tuesday',
+    WEDNESDAY = 'Wednesday',
+    THURSDAY = 'Thursday',
+    FRIDAY = 'Friday',
+    SATURDAY = 'Saturday',
+    SUNDAY = 'Sunday'
 }
 
 @Entity('class')
@@ -22,11 +22,11 @@ export class Class {
     @Column('uuid')
     sport_id: string
 
-    @Column('timestamptz')
-    start_time: Date
+    @Column('timetz')
+    start_time: string
 
-    @Column('timestamptz')
-    end_time: Date
+    @Column('timetz') 
+    end_time: string
 
     @Column('text')
     description: string

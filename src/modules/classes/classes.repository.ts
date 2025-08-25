@@ -59,19 +59,4 @@ export class ClassesRepository {
   async delete(id: string): Promise<void> {
     await this.classRepository.delete(id);
   }
-
-  async getStats(): Promise<any> {
-    return this.classRepository
-      .createQueryBuilder('class')
-      .select([
-        'COUNT(*) as total_classes',
-        'COUNT(CASE WHEN class.is_active = true THEN 1 END) as active_classes',
-        'sport.name as sport_name',
-        'COUNT(DISTINCT userClasses.user_id) as enrolled_users'
-      ])
-      .leftJoin('class.sport', 'sport')
-      .leftJoin('class.userClasses', 'userClasses')
-      .groupBy('sport.id, sport.name')
-      .getRawMany();
-  }
 }

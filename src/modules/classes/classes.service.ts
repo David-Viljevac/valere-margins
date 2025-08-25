@@ -5,13 +5,14 @@ import { ClassesRepository } from './classes.repository';
 // import { UpdateClassDto } from './dto/update-class.dto';
 import { Class } from '../../database/entities/class.entity';
 import { FilterClassesDto } from '../../common/dto/filter-classes.dto';
+import { CreateClassDto } from '../../common/dto/create-class.dto';
+import { UpdateClassDto } from '../../common/dto/update-class.dto';
 
 @Injectable()
 export class ClassesService {
   constructor(
     private readonly classesRepository: ClassesRepository,
-    // private readonly userClassRepository: UserClassRepository,
-  ) {}
+  ) { }
 
   async findAll(): Promise<Class[]> {
     return this.classesRepository.findAll();
@@ -29,34 +30,51 @@ export class ClassesService {
     return classEntity;
   }
 
-//   async create(createClassDto: CreateClassDto): Promise<Class> {
-//     return this.classesRepository.create(createClassDto);
-//   }
+  async create(createClassDto: CreateClassDto): Promise<Class> {
+    const classData: Partial<Class> = {
+      sport_id: createClassDto.sport_id,
+      description: createClassDto.description,
+      start_time: createClassDto.start_time,
+      end_time: createClassDto.end_time,
+      active_days: createClassDto.active_days,
+      created_at: new Date(),
+      edited_at: new Date(),
+      is_active: createClassDto.is_active ?? true, // Default to true if not provided
+    };
 
-//   async update(id: string, updateClassDto: UpdateClassDto): Promise<Class> {
-//     const existingClass = await this.findOne(id);
-//     return this.classesRepository.update(id, updateClassDto);
-//   }
+    return this.classesRepository.create(classData);
+  }
+
+  async update(id: string, updateClassDto: UpdateClassDto): Promise<Class> {
+    const classData: Partial<Class> = {
+      sport_id: updateClassDto.sport_id,
+      description: updateClassDto.description,
+      start_time: updateClassDto.start_time,
+      end_time: updateClassDto.end_time,
+      active_days: updateClassDto.active_days,
+      edited_at: new Date(),
+      is_active: updateClassDto.is_active ?? true, // Default to true if not provided
+    };
+
+    return this.classesRepository.update(id, classData);
+  }
 
   async delete(id: string): Promise<void> {
-    await this.findOne(id); // Check if exists
+    await this.findOne(id); 
     await this.classesRepository.delete(id);
   }
 
-//   async applyForClass(userId: string, classId: string): Promise<void> {
-//     // Check if class exists
-//     await this.findOne(classId);
-    
-//     // Check if user already applied
-//     const existingApplication = await this.userClassRepository.findByUserAndClass(userId, classId);
-//     if (existingApplication) {
-//       throw new ConflictException('User already applied for this class');
-//     }
+  //   async applyForClass(userId: string, classId: string): Promise<void> {
+  //     // Check if class exists
+  //     await this.findOne(classId);
 
-//     await this.userClassRepository.create({ user_id: userId, class_id: classId });
-//   }
+  //     // Check if user already applied
+  //     const existingApplication = await this.userClassRepository.findByUserAndClass(userId, classId);
+  //     if (existingApplication) {
+  //       throw new ConflictException('User already applied for this class');
+  //     }
 
-  async getStats(): Promise<any> {
-    return this.classesRepository.getStats();
-  }
+  //     await this.userClassRepository.create({ user_id: userId, class_id: classId });
+  //   }
+
 }

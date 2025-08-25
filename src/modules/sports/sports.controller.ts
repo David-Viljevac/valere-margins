@@ -42,8 +42,8 @@ export class SportsController {
     @Post()
     @Roles(Role.ADMIN)
     @ApiOperation({ summary: 'Create a new sport (Admin only)' })
-    async create(@Body() CreateSportDto: CreateSportDto, @Req() req: any) {
-        const newSport = await this.sportsService.create(CreateSportDto);
+    async create(@Body() createSportDto: CreateSportDto) {
+        const newSport = await this.sportsService.create(createSportDto);
         return ResponseFactory.success(newSport, 'Sport created successfully');
     }
 

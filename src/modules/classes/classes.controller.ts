@@ -5,12 +5,18 @@ import { ResponseFactory } from '../../common/dto/response.dto';
 import { FilterClassesDto } from '../../common/dto/filter-classes.dto';
 import { Role, Roles } from '../../common/decorators/roles.decorator';
 import { RolesGuard } from '../../common/guards/role-based-guard';
+import { SportsService } from '../sports/sports.service';
+import { CreateClassDto } from '../../common/dto/create-class.dto';
+import { UpdateClassDto } from '../../common/dto/update-class.dto';
 
 @ApiTags('classes')
 @Controller('/classes')
 @UseGuards(RolesGuard)
 export class ClassesController {
-  constructor(private readonly classesService: ClassesService) { }
+  constructor(
+    private readonly classesService: ClassesService,
+    private readonly sportsService: SportsService
+  ) { }
 
   // @Get()
   // @ApiOperation({ summary: 'Get all classes with optional filters' })
@@ -27,18 +33,11 @@ export class ClassesController {
   @Render('pages/admin-classes')
   async findAll() {
     const classes = await this.classesService.findAll();
+    const sports = await this.sportsService.findAll();
     return {
-      classes
+      classes,
+      sports
     }
-  }
-
-  @Get('stats')
-  //   @Roles('admin')
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get classes statistics (Admin only)' })
-  async getStats() {
-    const stats = await this.classesService.getStats();
-    return ResponseFactory.success(stats, 'Statistics retrieved successfully');
   }
 
   @Get(':id')
@@ -48,38 +47,26 @@ export class ClassesController {
     return ResponseFactory.success(classEntity, 'Class details retrieved successfully');
   }
 
-  //   @Post()
-  //   @Roles('admin')
-  //   @ApiBearerAuth()
-  //   @ApiOperation({ summary: 'Create a new class (Admin only)' })
-  //   async create(@Body() createClassDto: CreateClassDto) {
-  //     const newClass = await this.classesService.create(createClassDto);
-  //     return ResponseFactory.success(newClass, 'Class created successfully');
-  //   }
+  @Post('/create')
+  @Roles(Role.ADMIN)
+  @ApiOperation({ summary: 'Create a new class (Admin only)' })
+  async create(@Body() createClassDto: CreateClassDto) {
+    const newClass = await this.classesService.create(createClassDto);
+    return ResponseFactory.success(newClass, 'Class created successfully');
+  }
 
-  //   @Put(':id')
-  //   @Roles('admin')
-  //   @ApiBearerAuth()
-  //   @ApiOperation({ summary: 'Update a class (Admin only)' })
-  //   async update(@Param('id') id: string, @Body() updateClassDto: UpdateClassDto) {
-  //     const updatedClass = await this.classesService.update(id, updateClassDto);
-  //     return ResponseFactory.success(updatedClass, 'Class updated successfully');
-  //   }
+  @Post('/:id/edit')
+  @Roles(Role.ADMIN)
+  @ApiOperation({ summary: 'Update a class (Admin only)' })
+  async update(@Param('id') id: string, @Body() updateClassDto: UpdateClassDto) {
+    const updatedClass = await this.classesService.update(id, updateClassDto);
+    return ResponseFactory.success(updatedClass, 'Class updated successfully');
+  }
 
-  @Delete(':id')
-  //   @Roles('admin')
-  @ApiBearerAuth()
+  @Post(':id/delete')
   @ApiOperation({ summary: 'Delete a class (Admin only)' })
   async delete(@Param('id') id: string) {
     await this.classesService.delete(id);
     return ResponseFactory.success(null, 'Class deleted successfully');
   }
-
-  //   @Post(':id/apply')
-  //   @ApiBearerAuth()
-  //   @ApiOperation({ summary: 'Apply for a class' })
-  //   async applyForClass(@Param('id') id: string, @Req() req) {
-  //     await this.classesService.applyForClass(req.user.id, id);
-  //     return ResponseFactory.success(null, 'Successfully applied for class');
-  //   }
 }
