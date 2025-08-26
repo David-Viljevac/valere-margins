@@ -46,10 +46,30 @@ export class ClassesController {
 
   @Get('my')
   @Render('pages/my-classes')
-  async finyMyClasses(@Req() request: Request) {
+  async findMyClasses(@Req() request: Request) {
     const myClasses = await this.classesService.findUsersClasses(request.user.id);
     return {
       myClasses,
+    }
+  }
+
+  @Get('all')
+  @Render('pages/all-classes')
+  async findAllJoinableClasses(@Req() request: Request) {
+    let allClasses = await this.classesService.findAll();
+    let classes = allClasses.map(cls => ({
+      ...cls,
+      isEnrolled: cls.userClasses?.some(uc => uc.user_id === request.user.id && !uc.left_at)
+    }));
+    const sports = await this.sportsService.findAll();
+    const activeClassesCount = classes.filter(cls => cls.is_active).length
+    const myEnrollmentsCount = classes.filter(cls => cls.userClasses.find(uc => uc.user_id === request.user.id)).length
+
+    return {
+      classes,
+      sports,
+      activeClassesCount,
+      myEnrollmentsCount
     }
   }
 
@@ -87,6 +107,13 @@ export class ClassesController {
   @ApiOperation({ summary: 'Delete a class (Admin only)' })
   async leave(@Param('id') id: string, @Req() req: Request) {
     let newMyClasses = await this.classesService.leave(id, req.user.id);
+    return ResponseFactory.success(newMyClasses, 'Class deleted successfully');
+  }
+
+  @Post(':id/join')
+  @ApiOperation({ summary: 'Delete a class (Admin only)' })
+  async join(@Param('id') id: string, @Req() req: Request) {
+    let newMyClasses = await this.classesService.join(id, req.user.id);
     return ResponseFactory.success(newMyClasses, 'Class deleted successfully');
   }
 }

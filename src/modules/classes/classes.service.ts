@@ -72,17 +72,8 @@ export class ClassesService {
     return await this.classesRepository.leave(id, userId);
   }
 
-  //   async applyForClass(userId: string, classId: string): Promise<void> {
-  //     // Check if class exists
-  //     await this.findOne(classId);
-
-  //     // Check if user already applied
-  //     const existingApplication = await this.userClassRepository.findByUserAndClass(userId, classId);
-  //     if (existingApplication) {
-  //       throw new ConflictException('User already applied for this class');
-  //     }
-
-  //     await this.userClassRepository.create({ user_id: userId, class_id: classId });
-  //   }
+  async join(id: string, userId: string): Promise<Class[]> {
+    return await this.classesRepository.join(id, userId);
+  }
 
 }

@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, IsNull, Repository } from 'typeorm';
 import { Class } from '../../database/entities/class.entity';
 import { FilterClassesDto } from '../../common/dto/filter-classes.dto';
 import { UserClass } from '../../database/entities/user-class.entity';
@@ -15,10 +15,13 @@ export class ClassesRepository {
   }
 
   async findAll(): Promise<Class[]> {
-    return this.classRepository.find({
-      relations: ['sport', 'userClasses', 'userClasses.user'],
-      order: { created_at: 'DESC' }
-    });
+    return this.classRepository
+      .createQueryBuilder('class')
+      .leftJoinAndSelect('class.sport', 'sport')
+      .leftJoinAndSelect('class.userClasses', 'userClass', 'userClass.left_at IS NULL')
+      .leftJoinAndSelect('userClass.user', 'user')
+      .orderBy('class.created_at', 'DESC')
+      .getMany();
   }
 
   async findUsersClasses(userId: string): Promise<any[]> {
@@ -105,5 +108,16 @@ export class ClassesRepository {
       }
     );
     return this.findUsersClasses(userId)
+  }
+
+  async join(id: string, userId: string): Promise<Class[]> {
+    await this.userClassRepository.save({
+      class_id: id,
+      user_id: userId,
+      joined_at: new Date(),
+      left_at: null,
+    });
+
+    return this.findUsersClasses(userId);
   }
 }
