@@ -9,11 +9,11 @@ import { Role } from "../database/entities/role.entity"
 
 export const AppDataSource = new DataSource({
     type: "postgres",
-    host: 'localhost',
-    port: 5432,
-    username: 'valere',
-    password: 'admin',
-    database: 'valere',
+    host: process.env.DB_HOST,
+    port: parseInt(process.env.DB_PORT),
+    username: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
     synchronize: false,
     logging: true,
     entities: [User,Class,UserClass,Sport,Role],

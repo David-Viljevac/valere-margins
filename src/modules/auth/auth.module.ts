@@ -11,7 +11,6 @@ import { UsersRepository } from '../users/users.repository';
 
 @Module({
   imports: [
-    // UsersModule,
     PassportModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,

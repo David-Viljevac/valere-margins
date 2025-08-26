@@ -35,11 +35,6 @@ export class UsersRepository {
         return this.userRepository.save(newUser);
     }
 
-    // async update(id: string, userData: Partial<User>): Promise<User> {
-    //     await this.userRepository.update(id, userData);
-    //     return this.userRepository.findOne(id)
-    // }
-
     async login(userEmail: string, userPassword: string): Promise<User> {
         const foundUser = await this.userRepository.findOne({
             where: {

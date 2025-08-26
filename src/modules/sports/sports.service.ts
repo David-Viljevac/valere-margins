@@ -1,5 +1,4 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
-import { FilterClassesDto } from '../../common/dto/filter-classes.dto';
 import { SportsRepository } from './sports.repository';
 import { Sport } from '../../database/entities/sport.entity';
 
@@ -7,7 +6,6 @@ import { Sport } from '../../database/entities/sport.entity';
 export class SportsService {
     constructor(
         private readonly sportsRepository: SportsRepository,
-        // private readonly userClassRepository: UserClassRepository,
     ) { }
 
     async findAll(): Promise<Sport[]> {

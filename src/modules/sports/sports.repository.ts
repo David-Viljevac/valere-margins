@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
-import { FilterClassesDto } from '../../common/dto/filter-classes.dto';
 import { Sport } from '../../database/entities/sport.entity';
 import { v7 } from 'uuid';
 

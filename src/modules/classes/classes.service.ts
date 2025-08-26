@@ -1,10 +1,6 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { ClassesRepository } from './classes.repository';
-// import { UserClassRepository } from '../user-class/user-class.repository';
-// import { CreateClassDto } from './dto/create-class.dto';
-// import { UpdateClassDto } from './dto/update-class.dto';
 import { Class } from '../../database/entities/class.entity';
-import { FilterClassesDto } from '../../common/dto/filter-classes.dto';
 import { CreateClassDto } from '../../common/dto/create-class.dto';
 import { UpdateClassDto } from '../../common/dto/update-class.dto';
 
@@ -20,10 +16,6 @@ export class ClassesService {
 
   async findUsersClasses(userId: string): Promise<Class[]> {
     return this.classesRepository.findUsersClasses(userId);
-  }
-
-  async findByFilters(filters: FilterClassesDto): Promise<Class[]> {
-    return this.classesRepository.findByFilters(filters);
   }
 
   async findOne(id: string): Promise<Class> {

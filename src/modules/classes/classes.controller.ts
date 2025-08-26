@@ -2,7 +2,6 @@ import { Controller, Get, Post, Put, Delete, Body, Param, Query, UseGuards, Req,
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { ClassesService } from './classes.service';
 import { ResponseFactory } from '../../common/dto/response.dto';
-import { FilterClassesDto } from '../../common/dto/filter-classes.dto';
 import { Role, Roles } from '../../common/decorators/roles.decorator';
 import { RolesGuard } from '../../common/guards/role-based-guard';
 import { SportsService } from '../sports/sports.service';
@@ -19,16 +18,6 @@ export class ClassesController {
     private readonly classesService: ClassesService,
     private readonly sportsService: SportsService
   ) { }
-
-  // @Get()
-  // @ApiOperation({ summary: 'Get all classes with optional filters' })
-  // @ApiQuery({ name: 'sports', required: false, type: [String] })
-  // @ApiQuery({ name: 'isActive', required: false, type: Boolean })
-  // @ApiQuery({ name: 'activeDays', required: false, type: [String] })
-  // async findByFilters(@Query() filters: FilterClassesDto) {
-  //   const classes = await this.classesService.findByFilters(filters);
-  //   return ResponseFactory.success(classes, 'Classes retrieved successfully');
-  // }
 
   @Get()
   @Roles(Role.ADMIN)
@@ -104,14 +93,14 @@ export class ClassesController {
   }
 
   @Post(':id/leave')
-  @ApiOperation({ summary: 'Delete a class (Admin only)' })
+  @ApiOperation({ summary: 'Leave a class' })
   async leave(@Param('id') id: string, @Req() req: Request) {
     let newMyClasses = await this.classesService.leave(id, req.user.id);
     return ResponseFactory.success(newMyClasses, 'Class deleted successfully');
   }
 
   @Post(':id/join')
-  @ApiOperation({ summary: 'Delete a class (Admin only)' })
+  @ApiOperation({ summary: 'Join a class' })
   async join(@Param('id') id: string, @Req() req: Request) {
     let newMyClasses = await this.classesService.join(id, req.user.id);
     return ResponseFactory.success(newMyClasses, 'Class deleted successfully');

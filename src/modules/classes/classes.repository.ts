@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DataSource, IsNull, Repository } from 'typeorm';
 import { Class } from '../../database/entities/class.entity';
-import { FilterClassesDto } from '../../common/dto/filter-classes.dto';
 import { UserClass } from '../../database/entities/user-class.entity';
 
 @Injectable()
@@ -53,27 +52,6 @@ export class ClassesRepository {
       ...cls,
       allUsers: allUsersInClasses.filter(user => user.class_id === cls.id)
     }));
-  }
-
-  async findByFilters(filters: FilterClassesDto): Promise<Class[]> {
-    const query = this.classRepository.createQueryBuilder('class')
-      .leftJoinAndSelect('class.sport', 'sport')
-      .leftJoinAndSelect('class.userClasses', 'userClasses')
-      .leftJoinAndSelect('userClasses.user', 'user');
-
-    if (filters.sports?.length) {
-      query.andWhere('sport.name IN (:...sports)', { sports: filters.sports });
-    }
-
-    if (filters.isActive !== undefined) {
-      query.andWhere('class.is_active = :isActive', { isActive: filters.isActive });
-    }
-
-    if (filters.activeDays?.length) {
-      query.andWhere('class.active_days && :activeDays', { activeDays: filters.activeDays });
-    }
-
-    return query.orderBy('class.created_at', 'DESC').getMany();
   }
 
   async findOne(id: string): Promise<Class> {

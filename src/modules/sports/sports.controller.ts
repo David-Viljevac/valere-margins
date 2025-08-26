@@ -24,14 +24,6 @@ export class SportsController {
         }
     }
 
-    // @Get()
-    // @Roles(Role.ADMIN)
-    // @ApiOperation({ summary: 'Get all sports' })
-    // async findAll() {
-    //     const sports = await this.sportsService.findAll();
-    //     return ResponseFactory.success(sports, 'Sports retrieved successfully');
-    // }
-
     @Get(':id')
     @ApiOperation({ summary: 'Get sport details by ID' })
     async findOne(@Param('id') id: string) {

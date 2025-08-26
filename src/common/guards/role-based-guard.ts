@@ -36,7 +36,6 @@ export class RolesGuard implements CanActivate {
                 if (role === Role.MEMBER) {
                     return true; // Any authenticated user
                 }
-                // Add more role checks as needed
                 return request.user.role === role;
             });
 
