@@ -34,9 +34,11 @@ export class ClassesController {
   async findAll() {
     const classes = await this.classesService.findAll();
     const sports = await this.sportsService.findAll();
+    const activeClassesCount = classes.filter(cls => cls.is_active).length
     return {
       classes,
-      sports
+      sports,
+      activeClassesCount
     }
   }
 
