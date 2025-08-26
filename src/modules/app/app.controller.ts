@@ -14,7 +14,7 @@ export class AppController {
     let user;
     try {
       user = request.user;
-      const classes = await this.classesService.findAll();
+      const classes = await this.classesService.findUsersClasses(user.user_id);
 
       return {
         title: 'Sports Complex Dashboard',

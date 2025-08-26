@@ -18,6 +18,10 @@ export class ClassesService {
     return this.classesRepository.findAll();
   }
 
+  async findUsersClasses(userId: string): Promise<Class[]> {
+    return this.classesRepository.findUsersClasses(userId);
+  }
+
   async findByFilters(filters: FilterClassesDto): Promise<Class[]> {
     return this.classesRepository.findByFilters(filters);
   }
@@ -62,6 +66,10 @@ export class ClassesService {
   async delete(id: string): Promise<void> {
     await this.findOne(id); 
     await this.classesRepository.delete(id);
+  }
+
+  async leave(id: string, userId: string): Promise<Class[]> {
+    return await this.classesRepository.leave(id, userId);
   }
 
   //   async applyForClass(userId: string, classId: string): Promise<void> {

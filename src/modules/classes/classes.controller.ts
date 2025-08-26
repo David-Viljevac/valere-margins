@@ -8,6 +8,8 @@ import { RolesGuard } from '../../common/guards/role-based-guard';
 import { SportsService } from '../sports/sports.service';
 import { CreateClassDto } from '../../common/dto/create-class.dto';
 import { UpdateClassDto } from '../../common/dto/update-class.dto';
+import { Request } from 'express';
+
 
 @ApiTags('classes')
 @Controller('/classes')
@@ -42,6 +44,15 @@ export class ClassesController {
     }
   }
 
+  @Get('my')
+  @Render('pages/my-classes')
+  async finyMyClasses(@Req() request: Request) {
+    const myClasses = await this.classesService.findUsersClasses(request.user.id);
+    return {
+      myClasses,
+    }
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Get class details by ID' })
   async findOne(@Param('id') id: string) {
@@ -70,5 +81,12 @@ export class ClassesController {
   async delete(@Param('id') id: string) {
     await this.classesService.delete(id);
     return ResponseFactory.success(null, 'Class deleted successfully');
+  }
+
+  @Post(':id/leave')
+  @ApiOperation({ summary: 'Delete a class (Admin only)' })
+  async leave(@Param('id') id: string, @Req() req: Request) {
+    let newMyClasses = await this.classesService.leave(id, req.user.id);
+    return ResponseFactory.success(newMyClasses, 'Class deleted successfully');
   }
 }
