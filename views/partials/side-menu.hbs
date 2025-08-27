@@ -1,0 +1,118 @@
+<nav class="sidebar">
+    <div style="padding: 20px; border-bottom: 1px solid #34495e;">
+        <h2>Sports Complex</h2>
+        <!-- Show user info if logged in -->
+        {{#if user.email}}
+            <div style="margin-top: 10px; font-size: 12px; color: #bdc3c7;">
+                Welcome, {{user.email}}
+            </div>
+        {{/if}}
+    </div>
+    
+    <ul style="list-style: none; padding: 0; margin: 0;">
+        <!-- Dashboard -->
+        <li style="border-bottom: 1px solid #34495e;">
+            <a href="/" style="display: block; padding: 15px 20px; color: white; text-decoration: none; transition: background-color 0.3s;">
+                🏠 Dashboard
+            </a>
+        </li>
+
+        <!-- Admin Panel Section - Only show if user is admin -->
+        {{#if user.isAdmin}}
+            <li style="border-bottom: 1px solid #34495e;">
+                <div style="padding: 10px 20px; color: #bdc3c7; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; background-color: #1a252f;">
+                    Admin Panel
+                </div>
+            </li>
+            <li style="border-bottom: 1px solid #34495e;">
+                <a href="/sports" style="display: block; padding: 12px 20px 12px 40px; color: white; text-decoration: none; transition: background-color 0.3s; font-size: 14px;">
+                    ⚽ Manage Sports
+                </a>
+            </li>
+            <li style="border-bottom: 1px solid #34495e;">
+                <a href="/classes" style="display: block; padding: 12px 20px 12px 40px; color: white; text-decoration: none; transition: background-color 0.3s; font-size: 14px;">
+                    📚 Manage Classes
+                </a>
+            </li>
+        {{/if}}
+
+        <!-- Member Panel Section - Show if user is logged in -->
+        {{#if user}}
+            <li style="border-bottom: 1px solid #34495e;">
+                <div style="padding: 10px 20px; color: #bdc3c7; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; background-color: #1a252f;">
+                    Member Panel
+                </div>
+            </li>
+            <li style="border-bottom: 1px solid #34495e;">
+                <a href="/classes/my" style="display: block; padding: 12px 20px 12px 40px; color: white; text-decoration: none; transition: background-color 0.3s; font-size: 14px;">
+                    🏃 My Classes
+                </a>
+            </li>
+            <li style="border-bottom: 1px solid #34495e;">
+                <a href="/classes/all" style="display: block; padding: 12px 20px 12px 40px; color: white; text-decoration: none; transition: background-color 0.3s; font-size: 14px;">
+                    📅 All classes
+                </a>
+            </li>
+        {{/if}}
+
+        <!-- Spacer to push bottom items down -->
+        <li style="flex-grow: 1;"></li>
+
+        <!-- Settings and Auth Section -->
+        {{#if user}}
+            <!-- Settings for logged in users -->
+            <li style="border-top: 1px solid #34495e; margin-top: auto;">
+                <a href="/settings" style="display: block; padding: 15px 20px; color: white; text-decoration: none; transition: background-color 0.3s;">
+                    ⚙️ Settings
+                </a>
+            </li>
+            <!-- Logout Button -->
+            <li>
+                <form action="/auth/logout" method="POST" style="margin: 0;">
+                    <button type="submit" style="width: 100%; display: block; padding: 15px 20px; color: #e74c3c; background: none; border: none; text-decoration: none; transition: background-color 0.3s; cursor: pointer; text-align: left; font-size: 16px;">
+                        🚪 Logout
+                    </button>
+                </form>
+            </li>
+        {{else}}
+            <!-- Login/Register for guests -->
+            <li style="border-top: 1px solid #34495e; margin-top: auto; border-bottom: 1px solid #34495e;">
+                <a href="/users/login" style="display: block; padding: 15px 20px; color: #2ecc71; text-decoration: none; transition: background-color 0.3s;">
+                    🔐 Login
+                </a>
+            </li>
+            <li>
+                <a href="/users/register" style="display: block; padding: 15px 20px; color: #3498db; text-decoration: none; transition: background-color 0.3s;">
+                    📝 Register
+                </a>
+            </li>
+        {{/if}}
+    </ul>
+    
+    <style>
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .sidebar ul {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        
+        .sidebar a:hover,
+        .sidebar button:hover {
+            background-color: #34495e !important;
+        }
+        
+        .sidebar button:hover {
+            color: #ffffff !important;
+        }
+
+        /* Active link styling */
+        .sidebar a.active {
+            background-color: #3498db;
+        }
+    </style>
+</nav>

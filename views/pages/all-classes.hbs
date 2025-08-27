@@ -1,0 +1,352 @@
+{{#if error}}
+<div style="background-color: #e74c3c; color: white; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+    {{error}}
+</div>
+{{/if}}
+
+{{#if success}}
+<div style="background-color: #27ae60; color: white; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+    {{success}}
+</div>
+{{/if}}
+
+<div class="page-header" style="margin-bottom: 30px;">
+    <h1 style="color: #2c3e50; margin-bottom: 10px;">Available Classes</h1>
+    <p style="color: #7f8c8d;">Browse and join available sports classes</p>
+</div>
+
+<!-- Filter Section -->
+<div
+    style="background: white; padding: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 30px;">
+    <h3 style="color: #2c3e50; margin-bottom: 15px;">Filter Classes</h3>
+    <div style="display: flex; gap: 15px; align-items: end; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 200px;">
+            <label for="sportFilter"
+                style="display: block; margin-bottom: 8px; color: #2c3e50; font-weight: bold;">Sport:</label>
+            <select id="sportFilter" style="width: 100%; padding: 10px; border: 2px solid #bdc3c7; border-radius: 5px;">
+                <option value="">All Sports</option>
+                {{#each sports}}
+                <option value="{{name}}">{{name}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <div style="flex: 1; min-width: 150px;">
+            <label for="statusFilter"
+                style="display: block; margin-bottom: 8px; color: #2c3e50; font-weight: bold;">Status:</label>
+            <select id="statusFilter"
+                style="width: 100%; padding: 10px; border: 2px solid #bdc3c7; border-radius: 5px;">
+                <option value="">All Classes</option>
+                <option value="active">Active Only</option>
+            </select>
+        </div>
+        <button onclick="filterClasses()"
+            style="padding: 10px 20px; background-color: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+            Filter
+        </button>
+        <button onclick="clearFilters()"
+            style="padding: 10px 20px; background-color: #95a5a6; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            Clear
+        </button>
+    </div>
+</div>
+
+<!-- Classes Statistics -->
+<div class="dashboard-stats"
+    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+    <div style="background: white; padding: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3 style="color: #2c3e50;">Total Classes</h3>
+        <p style="font-size: 2em; color: #3498db;">{{classes.length}}</p>
+    </div>
+
+    <div style="background: white; padding: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3 style="color: #2c3e50;">Active Classes</h3>
+        <p style="font-size: 2em; color: #27ae60;" id="activeClassesCount">{{activeClassesCount}}</p>
+    </div>
+
+    <div style="background: white; padding: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3 style="color: #2c3e50;">My Enrollments</h3>
+        <p style="font-size: 2em; color: #f39c12;">{{myEnrollmentsCount}}</p>
+    </div>
+</div>
+
+<!-- Classes List -->
+{{#if classes.length}}
+<div class="classes-section">
+    <h2 style="color: #2c3e50; margin-bottom: 20px;">Available Classes</h2>
+
+    <div class="classes-grid" id="classesGrid"
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 20px;">
+        {{#each classes}}
+        <div class="class-card"
+            style="background: white; padding: 25px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid {{#if is_active}}#27ae60{{else}}#e74c3c{{/if}};"
+            data-sport="{{sport.name}}" data-active="{{is_active}}" data-enrolled="{{isEnrolled}}"
+            id="class-card-{{id}}">
+
+            <!-- Class Header -->
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                <div style="flex: 1;">
+                    <h3 style="color: #2c3e50; margin-bottom: 8px;">
+                        {{sport.name}} - {{description}}
+                    </h3>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                        <span
+                            style="background: {{#if is_active}}#27ae60{{else}}#e74c3c{{/if}}; color: white; padding: 2px 8px; border-radius: 3px; font-size: 12px;">
+                            {{#if is_active}}Active{{else}}Inactive{{/if}}
+                        </span>
+                        <span style="color: #7f8c8d; font-size: 14px;">
+                            {{start_time}} - {{end_time}}
+                        </span>
+                    </div>
+                    {{#if isEnrolled}}
+                    <div style="margin-bottom: 8px;">
+                        <span
+                            style="background: #3498db; color: white; padding: 2px 8px; border-radius: 3px; font-size: 11px;">
+                            Already Enrolled
+                        </span>
+                    </div>
+                    {{/if}}
+                </div>
+
+                <!-- Join/Leave Button -->
+                <div style="flex-shrink: 0;">
+                    {{#if isEnrolled}}
+                    <button onclick="leaveClass('{{id}}', '{{sport.name}} - {{description}}')"
+                        style="padding: 8px 12px; background-color: #e74c3c; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 12px; transition: background-color 0.3s;"
+                        title="Leave Class" id="btn-{{id}}">
+                        Leave Class
+                    </button>
+                    {{else}}
+                    {{#if is_active}}
+                    <button onclick="joinClass('{{id}}', '{{sport.name}} - {{description}}')"
+                        style="padding: 8px 12px; background-color: #27ae60; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 12px; transition: background-color 0.3s;"
+                        title="Join Class" id="btn-{{id}}">
+                        Join Class
+                    </button>
+                    {{else}}
+                    <button disabled
+                        style="padding: 8px 12px; background-color: #95a5a6; color: white; border: none; border-radius: 3px; cursor: not-allowed; font-size: 12px;"
+                        title="Class Inactive">
+                        Inactive
+                    </button>
+                    {{/if}}
+                    {{/if}}
+                </div>
+            </div>
+
+            <!-- Class Details -->
+            <div style="margin-bottom: 15px;">
+                <div style="margin-bottom: 8px;">
+                    <strong style="color: #2c3e50; font-size: 14px;">Active Days:</strong>
+                    <div style="margin-top: 5px;">
+                        {{#each active_days}}
+                        <span
+                            style="background: #ecf0f1; color: #2c3e50; padding: 2px 6px; border-radius: 3px; font-size: 11px; margin-right: 5px;">
+                            {{this}}
+                        </span>
+                        {{/each}}
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 8px;">
+                    <strong style="color: #2c3e50; font-size: 12px;">Enrolled Students:</strong>
+                    <span style="color: #7f8c8d; font-size: 12px;">{{userClasses.length}} students</span>
+                </div>
+
+                {{#if userClasses.length}}
+                <div style="margin-top: 8px;">
+                    <div style="max-height: 60px; overflow-y: auto;">
+                        {{#each userClasses}}
+                        <span
+                            style="display: inline-block; background: #3498db; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px; margin-right: 5px; margin-bottom: 3px;">
+                            {{user.first_name}} {{user.last_name}}
+                        </span>
+                        {{/each}}
+                    </div>
+                </div>
+                {{/if}}
+            </div>
+        </div>
+        {{/each}}
+    </div>
+</div>
+{{else}}
+<div
+    style="text-align: center; padding: 60px; background: white; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <h2 style="color: #7f8c8d; margin-bottom: 15px;">No Classes Available</h2>
+    <p style="color: #95a5a6; margin-bottom: 20px;">There are currently no classes available to join.</p>
+    <div style="font-size: 48px; margin-bottom: 20px; color: #bdc3c7;">📚</div>
+</div>
+{{/if}}
+
+<!-- Confirmation Modal -->
+<div id="confirmModal"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+    <div
+        style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 10px; min-width: 400px; max-width: 500px;">
+        <h3 style="color: #2c3e50; margin-bottom: 20px;" id="confirmTitle">Confirm Action</h3>
+        <p style="color: #7f8c8d; margin-bottom: 20px;" id="confirmMessage">
+            Are you sure?
+        </p>
+
+        <div style="display: flex; gap: 15px; justify-content: flex-end;">
+            <button type="button" onclick="closeConfirmModal()"
+                style="padding: 10px 20px; background-color: #95a5a6; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                Cancel
+            </button>
+            <button type="button" onclick="confirmAction()"
+                style="padding: 10px 20px; color: white; border: none; border-radius: 5px; cursor: pointer;"
+                id="confirmActionButton">
+                Confirm
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentClassId = null;
+    let currentClassName = null;
+    let currentAction = null; // 'join' or 'leave'
+
+    // Join class functionality
+    function joinClass(classId, className) {
+        currentClassId = classId;
+        currentClassName = className;
+        currentAction = 'join';
+
+        document.getElementById('confirmTitle').textContent = 'Join Class';
+        document.getElementById('confirmMessage').textContent = `Would you like to join "${className}"?`;
+        document.getElementById('confirmActionButton').textContent = 'Join Class';
+        document.getElementById('confirmActionButton').style.backgroundColor = '#27ae60';
+        document.getElementById('confirmModal').style.display = 'block';
+    }
+
+    // Leave class functionality
+    function leaveClass(classId, className) {
+        currentClassId = classId;
+        currentClassName = className;
+        currentAction = 'leave';
+
+        document.getElementById('confirmTitle').textContent = 'Leave Class';
+        document.getElementById('confirmMessage').textContent = `Are you sure you want to leave "${className}"?`;
+        document.getElementById('confirmActionButton').textContent = 'Leave Class';
+        document.getElementById('confirmActionButton').style.backgroundColor = '#e74c3c';
+        document.getElementById('confirmModal').style.display = 'block';
+    }
+
+    function closeConfirmModal() {
+        document.getElementById('confirmModal').style.display = 'none';
+        currentClassId = null;
+        currentClassName = null;
+        currentAction = null;
+    }
+
+    async function confirmAction() {
+        if (!currentClassId || !currentAction) return;
+
+        const endpoint = currentAction === 'join' ? `/classes/${currentClassId}/join` : `/classes/${currentClassId}/leave`;
+
+        try {
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include'
+            });
+
+            if (response.ok) {
+                showNotification(`Successfully ${currentAction == 'join' ? 'joined' : 'left'}!`, 'success');
+                closeConfirmModal();
+
+                // Reload page after 1 second to show updated data
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            } else {
+                const result = await response.json();
+                throw new Error(result.message || `Failed to ${currentAction} class`);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showNotification(`Error ${currentAction}ing class: ` + error.message, 'error');
+            closeConfirmModal();
+        }
+    }
+    // Filter functionality
+    function filterClasses() {
+        const sportFilter = document.getElementById('sportFilter').value;
+        const statusFilter = document.getElementById('statusFilter').value;
+        const classCards = document.querySelectorAll('.class-card');
+
+        classCards.forEach(card => {
+            let show = true;
+
+            if (sportFilter && card.dataset.sport !== sportFilter) {
+                show = false;
+            }
+
+            if (statusFilter === 'active' && card.dataset.active === 'false') {
+                show = false;
+            }
+
+            if (statusFilter === 'available' && (card.dataset.active === 'false' || card.dataset.enrolled === 'true')) {
+                show = false;
+            }
+
+            card.style.display = show ? 'block' : 'none';
+        });
+    }
+
+    function clearFilters() {
+        document.getElementById('sportFilter').value = '';
+        document.getElementById('statusFilter').value = '';
+        document.querySelectorAll('.class-card').forEach(card => {
+            card.style.display = 'block';
+        });
+    }
+
+    // Show notifications
+    function showNotification(message, type = 'info') {
+        const existing = document.getElementById('notification');
+        if (existing) existing.remove();
+
+        const notification = document.createElement('div');
+        notification.id = 'notification';
+        notification.textContent = message;
+
+        const colors = {
+            success: '#27ae60',
+            error: '#e74c3c',
+            info: '#3498db'
+        };
+
+        notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${colors[type] || colors.info};
+        color: white;
+        padding: 15px 20px;
+        border-radius: 5px;
+        z-index: 9999;
+        font-weight: bold;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        max-width: 300px;
+    `;
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.style.opacity = '0';
+            notification.style.transition = 'opacity 0.3s ease';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('confirmModal').addEventListener('click', function (e) {
+        if (e.target === this) {
+            closeConfirmModal();
+        }
+    });
+</script>

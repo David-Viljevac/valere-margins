@@ -1,0 +1,132 @@
+{{#if error}}
+    <div class="error-message">
+        {{error}}
+    </div>
+{{/if}}
+
+{{#if success}}
+    <div class="success-message">
+        {{success}}
+    </div>
+{{/if}}
+
+<form action="/users/register" method="POST" id="registerForm">
+    <div class="form-row">
+        <div class="form-group">
+            <label for="first_name">First Name</label>
+            <input 
+                type="text" 
+                id="first_name" 
+                name="first_name" 
+                required 
+                placeholder="John"
+                value="{{first_name}}"
+            >
+        </div>
+        <div class="form-group">
+            <label for="last_name">Last Name</label>
+            <input 
+                type="text" 
+                id="last_name" 
+                name="last_name" 
+                required 
+                placeholder="Doe"
+                value="{{last_name}}"
+            >
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="email">Email Address</label>
+        <input 
+            type="email" 
+            id="email" 
+            name="email" 
+            required 
+            placeholder="john.doe@example.com"
+            value="{{email}}"
+        >
+    </div>
+
+    {{!-- <div class="form-group">
+        <label for="phone_number">Phone Number <span style="color: #7f8c8d; font-weight: normal;">(Optional)</span></label>
+        <input 
+            type="tel" 
+            id="phone_number" 
+            name="phone_number" 
+            placeholder="+1234567890"
+            value="{{phone_number}}"
+        >
+    </div> --}}
+
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input 
+            type="password" 
+            id="password" 
+            name="password" 
+            required 
+            placeholder="Minimum 6 characters"
+            minlength="6"
+        >
+        <div class="help-text">Password must be at least 6 characters long</div>
+    </div>
+
+    <div class="form-group">
+        <label for="confirm_password">Confirm Password</label>
+        <input 
+            type="password" 
+            id="confirm_password" 
+            name="confirm_password" 
+            required 
+            placeholder="Repeat your password"
+        >
+    </div>
+
+    {{!-- <div class="form-group">
+        <div class="checkbox-group">
+            <input type="checkbox" id="terms" name="terms" required>
+            <label for="terms" style="margin-bottom: 0; font-size: 14px;">
+                I agree to the <a href="/terms" style="color: #667eea;">Terms of Service</a> 
+                and <a href="/privacy" style="color: #667eea;">Privacy Policy</a>
+            </label>
+        </div>
+    </div> --}}
+
+    <button type="submit" class="btn btn-primary">
+        Create Account
+    </button>
+</form>
+
+<div class="auth-footer">
+    <p style="color: #7f8c8d; margin-bottom: 10px;">Already have an account?</p>
+    <a href="/users/login">Sign In</a>
+</div>
+
+<script>
+    // Password confirmation validation
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirm_password').value;
+        
+        if (password !== confirmPassword) {
+            e.preventDefault();
+            alert("Passwords don't match!");
+            return false;
+        }
+        
+        return true;
+    });
+    
+    // Real-time password confirmation feedback
+    document.getElementById('confirm_password').addEventListener('input', function() {
+        const password = document.getElementById('password').value;
+        const confirmPassword = this.value;
+        
+        if (confirmPassword && password !== confirmPassword) {
+            this.style.borderColor = '#e74c3c';
+        } else {
+            this.style.borderColor = '#e0e0e0';
+        }
+    });
+</script>

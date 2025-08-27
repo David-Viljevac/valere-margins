@@ -1,0 +1,338 @@
+{{#if error}}
+    <div style="background-color: #e74c3c; color: white; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+        {{error}}
+    </div>
+{{/if}}
+
+{{#if success}}
+    <div style="background-color: #27ae60; color: white; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+        {{success}}
+    </div>
+{{/if}}
+
+<div class="page-header" style="margin-bottom: 30px;">
+    <h1 style="color: #2c3e50; margin-bottom: 10px;">Manage Sports</h1>
+    <p style="color: #7f8c8d;">Add, edit, and manage sports categories</p>
+</div>
+
+<!-- Add New Sport Form -->
+<div style="background: white; padding: 25px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 30px;">
+    <h2 style="color: #2c3e50; margin-bottom: 20px;">Add New Sport</h2>
+    
+    <form id="addSportForm" action="/sports" method="POST" style="display: flex; gap: 15px; align-items: end; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 250px;">
+            <label for="sportName" style="display: block; margin-bottom: 8px; color: #2c3e50; font-weight: bold;">Sport Name:</label>
+            <input 
+                type="text" 
+                id="sportName" 
+                name="name" 
+                placeholder="Enter sport name (e.g., Basketball, Tennis, Swimming)"
+                required
+                style="width: 100%; padding: 12px; border: 2px solid #bdc3c7; border-radius: 5px; font-size: 16px; transition: border-color 0.3s;"
+                onfocus="this.style.borderColor='#3498db'"
+                onblur="this.style.borderColor='#bdc3c7'"
+            >
+        </div>
+        
+        <button 
+            type="submit" 
+            style="padding: 12px 25px; background-color: #27ae60; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; transition: background-color 0.3s;"
+            onmouseover="this.style.backgroundColor='#219a52'"
+            onmouseout="this.style.backgroundColor='#27ae60'"
+        >
+            ➕ Add Sport
+        </button>
+    </form>
+</div>
+
+<!-- Sports Statistics -->
+<div class="dashboard-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+    <div style="background: white; padding: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3 style="color: #2c3e50;">Total Sports</h3>
+        <p style="font-size: 2em; color: #3498db;" id="totalSportsCount">{{sports.length}}</p>
+    </div>
+</div>
+
+<!-- Sports List -->
+{{#if sports.length}}
+    <div class="sports-section">
+        <h2 style="color: #2c3e50; margin-bottom: 20px;">Current Sports</h2>
+        
+        <div class="sports-grid" id="sportsGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+            {{#each sports}}
+                <div style="background: white; padding: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid #3498db;" id="sport-card-{{id}}">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h3 style="color: #2c3e50; margin-bottom: 8px;">⚽ {{name}}</h3>
+                            <p style="color: #7f8c8d; font-size: 14px;">
+                                Created: {{#if created_at}}{{created_at}}{{else}}Recently{{/if}}
+                            </p>
+                        </div>
+                        
+                        <div style="display: flex; gap: 10px;">
+                            <!-- Edit Button -->
+                            <button 
+                                onclick="editSport('{{id}}', '{{name}}')"
+                                style="padding: 8px 12px; background-color: #f39c12; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 12px; transition: background-color 0.3s;"
+                                onmouseover="this.style.backgroundColor='#e67e22'"
+                                onmouseout="this.style.backgroundColor='#f39c12'"
+                                title="Edit Sport"
+                            >
+                                ✏️
+                            </button>
+                            
+                            <!-- Delete Button -->
+                            <button 
+                                onclick="deleteSport('{{id}}', '{{name}}')"
+                                style="padding: 8px 12px; background-color: #e74c3c; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 12px; transition: background-color 0.3s;"
+                                onmouseover="this.style.backgroundColor='#c0392b'"
+                                onmouseout="this.style.backgroundColor='#e74c3c'"
+                                title="Delete Sport"
+                            >
+                                🗑️
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+{{else}}
+    <div id="noSportsMessage" style="text-align: center; padding: 60px; background: white; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h2 style="color: #7f8c8d; margin-bottom: 15px;">No Sports Available</h2>
+        <p style="color: #95a5a6; margin-bottom: 20px;">Get started by adding your first sport category!</p>
+        <div style="font-size: 48px; margin-bottom: 20px;">⚽</div>
+    </div>
+{{/if}}
+
+<!-- Edit Modal (Hidden by default) -->
+<div id="editModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 10px; min-width: 400px;">
+        <h3 style="color: #2c3e50; margin-bottom: 20px;">Edit Sport</h3>
+        
+        <form id="editForm" method="POST">
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; color: #2c3e50; font-weight: bold;">Sport Name:</label>
+                <input 
+                    type="text" 
+                    id="editSportName" 
+                    name="name" 
+                    required
+                    style="width: 100%; padding: 12px; border: 2px solid #bdc3c7; border-radius: 5px; font-size: 16px;"
+                >
+            </div>
+            
+            <div style="display: flex; gap: 15px; justify-content: flex-end;">
+                <button 
+                    type="button" 
+                    onclick="closeEditModal()"
+                    style="padding: 10px 20px; background-color: #95a5a6; color: white; border: none; border-radius: 5px; cursor: pointer;"
+                >
+                    Cancel
+                </button>
+                <button 
+                    type="submit" 
+                    style="padding: 10px 20px; background-color: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;"
+                >
+                    Update Sport
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function editSport(id, name) {
+    document.getElementById('editModal').style.display = 'block';
+    document.getElementById('editSportName').value = name;
+    document.getElementById('editForm').action = '/sports/' + id + '/edit';
+}
+
+function closeEditModal() {
+    document.getElementById('editModal').style.display = 'none';
+}
+
+// AJAX: Add new sport
+document.getElementById('addSportForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const sportName = formData.get('name');
+    
+    try {
+        const response = await fetch('/sports', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            credentials: 'include',
+            body: `name=${encodeURIComponent(sportName)}`
+        });
+
+        if (response.ok) {
+            // Clear form
+            this.reset();
+            
+            // Show success notification
+            showNotification('Sport added successfully!', 'success');
+            
+            // Reload page to show new sport (or you could add it dynamically)
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            const result = await response.json();
+            throw new Error(result.message || 'Failed to add sport');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification('Error adding sport: ' + error.message, 'error');
+    }
+});
+
+// AJAX: Edit sport
+document.getElementById('editForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const sportName = formData.get('name');
+    const sportId = this.action.split('/').slice(-2, -1)[0];
+    
+    try {
+        const response = await fetch(this.action, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            credentials: 'include',
+            body: `name=${encodeURIComponent(sportName)}`
+        });
+
+        if (response.ok) {
+            // Update the sport name in the card
+            const sportCard = document.getElementById(`sport-card-${sportId}`);
+            const sportNameElement = sportCard.querySelector('h3');
+            sportNameElement.textContent = `⚽ ${sportName}`;
+            
+            // Update the edit button onclick
+            const editButton = sportCard.querySelector('button[onclick*="editSport"]');
+            editButton.setAttribute('onclick', `editSport('${sportId}', '${sportName}')`);
+            
+            closeEditModal();
+            showNotification('Sport updated successfully!', 'success');
+        } else {
+            const result = await response.json();
+            throw new Error(result.message || 'Failed to update sport');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification('Error updating sport: ' + error.message, 'error');
+    }
+});
+
+// AJAX: Delete sport
+async function deleteSport(sportId, sportName) {
+    if (!confirm(`Are you sure you want to delete "${sportName}"? This action cannot be undone.`)) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`/sports/${sportId}/delete`, {
+            method: 'POST',
+            credentials: 'include'
+        });
+
+        if (response.ok) {
+            // Remove the sport card from DOM
+            const sportCard = document.getElementById(`sport-card-${sportId}`);
+            sportCard.style.transition = 'opacity 0.3s ease';
+            sportCard.style.opacity = '0';
+            
+            setTimeout(() => {
+                sportCard.remove();
+                updateSportsCount();
+                showNotification('Sport deleted successfully!', 'success');
+                
+                // Check if no sports left
+                const remainingSports = document.querySelectorAll('#sportsGrid > div');
+                if (remainingSports.length === 0) {
+                    showNoSportsMessage();
+                }
+            }, 300);
+        } else {
+            const result = await response.json();
+            throw new Error(result.message || 'Failed to delete sport');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification('Error deleting sport: ' + error.message, 'error');
+    }
+}
+
+// Show notifications
+function showNotification(message, type = 'info') {
+    // Remove existing notification
+    const existing = document.getElementById('notification');
+    if (existing) existing.remove();
+
+    const notification = document.createElement('div');
+    notification.id = 'notification';
+    notification.textContent = message;
+    
+    const colors = {
+        success: '#27ae60',
+        error: '#e74c3c',
+        info: '#3498db'
+    };
+    
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${colors[type] || colors.info};
+        color: white;
+        padding: 15px 20px;
+        border-radius: 5px;
+        z-index: 9999;
+        font-weight: bold;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        max-width: 300px;
+    `;
+
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        notification.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
+// Update sports count
+function updateSportsCount() {
+    const sportsCards = document.querySelectorAll('#sportsGrid > div');
+    const count = sportsCards.length;
+    
+    document.getElementById('totalSportsCount').textContent = count;
+    document.getElementById('activeSportsCount').textContent = count;
+}
+
+// Show no sports message
+function showNoSportsMessage() {
+    const sportsSection = document.querySelector('.sports-section');
+    if (sportsSection) {
+        sportsSection.innerHTML = `
+            <div style="text-align: center; padding: 60px; background: white; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <h2 style="color: #7f8c8d; margin-bottom: 15px;">No Sports Available</h2>
+                <p style="color: #95a5a6; margin-bottom: 20px;">Get started by adding your first sport category!</p>
+                <div style="font-size: 48px; margin-bottom: 20px;">⚽</div>
+            </div>
+        `;
+    }
+}
+
+// Close modal when clicking outside
+document.getElementById('editModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeEditModal();
+    }
+});
+</script>
