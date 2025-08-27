@@ -27,8 +27,17 @@ Web application for managing sports complexes, classes, and user enrollments bui
    ```env
    Look at .env.example file to check for env variables which you need to set.
    ```
+   
+3. **Database**
+   ```bash
+   Postgres database which can be installed in docker container
+   docker pull postgres
+   docker run --name my_postgres -e POSTGRES_DB=valere -e POSTGRES_USER=valere -e POSTGRESS_PASSWORD=password -p 5432:5432 -d postgres
+   docker cp initial_dump.sql my_postgres:/initial_dump.sql
+   docker exec -it my_postgres pg_restore -U valere -d valere /initial_dump.sql
+   ```
 
-3. **Run**
+4. **Run**
    ```bash
    npm run start:dev
    npm run start:debug
